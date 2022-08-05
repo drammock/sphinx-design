@@ -142,7 +142,11 @@ class DropdownHtmlTransform(SphinxPostTransform):
 
     def run(self):
         """Run the transform"""
-        for node in self.document.traverse(lambda node: is_component(node, "dropdown")):
+        # use this instead once docutils>=0.18.1 is min supported version:
+        # _dropdowns = list(self.document.findall(lambda node: is_component(node, "dropdown")))
+        _meth = getattr(self.document, "findall", self.document.traverse)
+        _dropdowns = list(_meth(lambda node: is_component(node, "dropdown")))
+        for node in _dropdowns:
 
             # TODO option to not have card css (but requires more formatting)
             use_card = True

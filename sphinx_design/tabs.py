@@ -213,9 +213,11 @@ class TabSetHtmlTransform(SphinxPostTransform):
 
     def run(self) -> None:
         """Run the transform."""
-        for tab_set in self.document.traverse(
-            lambda node: is_component(node, "tab-set")
-        ):
+        # use this instead once docutils>=0.18.1 is min supported version:
+        # _tab_sets = list(self.document.findall(lambda node: is_component(node, "tab-set")))
+        _meth = getattr(self.document, "findall", self.document.traverse)
+        _tab_sets = list(_meth(lambda node: is_component(node, "tab-set")))
+        for tab_set in _tab_sets:
             tab_set_identity = self.get_unique_key()
             children = []
             # get the first selected node
